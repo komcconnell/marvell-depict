@@ -110,7 +110,9 @@ BOARD_SEPOLICY_UNION := \
     voicecapture.te \
     wireless_init.te \
     wpa.te \
-    zygote.te
+    zygote.te \
+    hdmi_depict.te
+
 
 # Default hardware platform and buffer number
 MV_GFX_SOC := BG2DTV
