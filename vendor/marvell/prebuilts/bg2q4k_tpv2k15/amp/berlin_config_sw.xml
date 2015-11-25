@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Marvell>
+    <Berlin name="AMP config" version="1.0" rev="0">
+        <AMP version="0.5" profile="gtv_v4_dtv_willow">
+            <Components>
+                <CLK    MaxInstanceNum="8" />
+
+                <DMX    MaxInstanceNum="64"
+                        MaxInputPortNum="16"
+                        MaxOutputPortNum="128"
+                        TVPVersion="2" />
+
+                <DUM    MaxInstanceNum="8" />
+
+                <VDEC   MaxInstanceNum="21"
+                        TVPVersion="2" />
+                        <!-- The unit: the vpu id for MPEG2  -->
+                        <!-- The ten : the vpu id for H264   -->
+                        <!-- 10 means: MPEG2/Vmeta, H264/V2G -->
+
+                <VENC   />
+
+                <VOUT   MaxInstanceNum="2"
+                        MaxInputPortNum="1"
+                        MaxOutputPortNum="0" />
+
+                <ADEC   MaxInstanceNum="8" />
+
+                <AENC   />
+
+                <AREN   MaxInstanceNum="8" />
+
+                <APP    />
+
+                <AOUT   MaxInstanceNum="2"
+                        MaxInputPortNum="1"
+                        MaxOutputPortNum="0" />
+
+                <AVIN   MaxInstanceNum="16"
+                        MaxRegisterNotifyNum="32"
+                        Version="1.1">
+                        <!-- CONFIG: AVIN SW configuration  -->
+                        <!-- ComponentVBISupported: 0 means not support; 1 means support -->
+                        <!-- CvbsVBISupported: 0 means not support; 1 means support -->
+                        <!-- CvbsDefStd: Select one in "NTSC_MJ/NTSC443/PAL/PALM/PALN/SECAM/PAL60/PALNC"-->
+                        <!-- Timing50HzSupported: 0 means not support; 1 means support-->
+                        <!-- Timing60HzSupported: 0 means not support; 1 means support-->
+                        <!-- CombFilter3DSupported: 0 means not support; 1 means support-->
+                        <!-- InternalEDIDEnable: 0 means disable; 1 means enable-->
+                        <!-- InternalEdid: Internal EDID data, if "InternalEDIDEnable" is 0 then this section will not be pasered -->
+                        <CONFIG
+                                ComponentVBISupported = "0"
+                                CvbsVBISupported = "1"
+                                VBIFormatSupported = "PAL_CC"
+                                CvbsDefStd = "PAL"
+                                Timing50HzSupported = "1"
+                                Timing60HzSupported = "1"
+                                CombFilter3DSupported = "1"
+                                InternalEDIDEnable = "0"
+                                InternalEdid = "0x00,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x00,0x41,0x0C,0x07,0x95,0x01,0x01,0x01,0x01,
+                                                0x0C,0x18,0x01,0x03,0x80,0x80,0x48,0x78,0x0A,0xE6,0x92,0xA3,0x54,0x4A,0x99,0x26,
+                                                0x0F,0x4A,0x4C,0x21,0x08,0x00,0xB3,0x00,0x95,0x00,0xA9,0x40,0x90,0x40,0x81,0x00,
+                                                0x81,0x80,0x81,0x40,0x01,0x01,0x02,0x3A,0x80,0x18,0x71,0x38,0x2D,0x40,0x58,0x2C,
+                                                0x45,0x00,0x00,0xD0,0x52,0x00,0x00,0x1E,0x02,0x3A,0x80,0xD0,0x72,0x38,0x2D,0x40,
+                                                0x10,0x2C,0x45,0x80,0x00,0xD0,0x52,0x00,0x00,0x1E,0x00,0x00,0x00,0xFC,0x00,0x50,
+                                                0x68,0x69,0x6C,0x69,0x70,0x73,0x20,0x46,0x54,0x56,0x0A,0x20,0x00,0x00,0x00,0xFD,
+                                                0x00,0x30,0x3E,0x0F,0x46,0x1E,0x00,0x0A,0x20,0x20,0x20,0x20,0x20,0x20,0x01,0x0C,
+                                                0x02,0x03,0x40,0xF1,0x55,0x5D,0x5F,0x5E,0x10,0x1F,0x20,0x22,0x21,0x05,0x14,0x04,
+                                                0x13,0x12,0x03,0x11,0x02,0x16,0x07,0x15,0x06,0x01,0x26,0x09,0x1F,0x07,0x15,0x07,
+                                                0x50,0x83,0x01,0x00,0x00,0x73,0x03,0x0C,0x00,0x00,0x00,0x38,0x3C,0xA0,0x4C,0x4C,
+                                                0xC8,0x64,0x01,0x02,0x03,0x01,0x40,0x0F,0xF8,0xE2,0x00,0x49,0xE3,0x0E,0x61,0x60,
+                                                0x01,0x1D,0x80,0x3E,0x73,0x38,0x2D,0x40,0x7E,0x2C,0x45,0x80,0x00,0xD0,0x52,0x00,
+                                                0x00,0x1E,0x01,0x1D,0x80,0xD0,0x72,0x1C,0x16,0x20,0x10,0x2C,0x25,0x80,0x00,0xD0,
+                                                0x52,0x00,0x00,0x9E,0x01,0x1D,0x00,0xBC,0x52,0xD0,0x1E,0x20,0xB8,0x28,0x55,0x40,
+                                                0x00,0xD0,0x52,0x00,0x00,0x1E,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x09">
+                        </CONFIG>
+                </AVIN>
+
+                <FE     MaxInstanceNum="2">
+                    <Instance0  />
+                    <Instance1  />
+                </FE>
+
+                <IVPP   />
+
+                <OVPP   />
+
+            </Components>
+
+            <Services>
+                <Display>
+                    <Primary    System="525P60"
+                                FrameRate="60"
+                                Width="720"
+                                Height="480"
+                                Scan="Progressive">
+                        <HDMI       Enable="False"
+                                    ColorFormat="RGB888"
+                                    BitDepth="8"
+                                    PixelRepeat="True" />
+                        <PANEL      Enable="True"
+                                    PanelType_Model256="VBYONE"
+                                    PanelMode_Model256="VBO_FMT_RGB_YCbCr444_30bpp"
+                                    PanelRes_Model256="RES_UHD"
+                                    PanelLanes_Model256="8"
+                                    PanelVSplit_Model256="NORMAL"
+                                    VideoInverse_Model256="Normal"
+                                    VByOnePanelMode_Model256="0"
+                                    PanelType_Model255="VBYONE"
+                                    PanelMode_Model255="VBO_FMT_RGB_YCbCr444_30bpp"
+                                    PanelRes_Model255="RES_FHD"
+                                    PanelLanes_Model255="2"
+                                    PanelVSplit_Model255="NORMAL"
+                                    VideoInverse_Model255="Normal"
+                                    VByOnePanelMode_Model255="0"
+                                    PanelType_Model254="LVDS"
+                                    PanelMode_Model254="JIEDA_4K_10Bits"
+                                    PanelRes_Model254="RES_FHD"
+                                    VideoInverse_Model254="Normal"
+                                    VByOnePanelMode_Model254="0"/>
+                    </Primary>
+
+                    <Secondary  System="NTSC_M"
+                                FrameRate="30"
+                                Width="720"
+                                Height="480"
+                                Scan="Interleave">
+                        <VDAC       Enable="True"/>
+                    </Secondary>
+
+                    <BuiltInFrames  EnableAll="True" />
+
+                </Display>
+
+                <Sound>
+                </Sound>
+
+                <Drm>
+                </Drm>
+            </Services>
+
+            <Pipeline>
+            </Pipeline>
+
+            <PowerManagement>
+                <!-- Power setting when system startup -->
+                <!-- DTV: VPP mosd_scl/ahd_vop/lvds_vop/ttl24_vop/ttl30_vop  -->
+                <StartUpPowerSave   APP   ="False"
+                                    ADAC  ="False"
+                                    AVIF  ="False"
+                                    CI    ="False"
+                                    DEMO  ="False"
+                                    LVDS  ="False"
+                                    DTV   ="False"
+                                    PIP   ="False"
+                                    TSI   ="False"
+                                    VDAC  ="False"
+                                    VMET  ="True"
+                                    V2G   ="True"
+                                    VPP   ="False"
+                                    ZSP   ="False"
+                                    DRM   ="False"
+                                    COST  ="True"
+                                    AIO   ="False"/>
+                <!-- Core Voltage Table, update LEAKAGE_GROUP_NUM if table is bigger  -->
+                <!-- Leakage,Low,High  -->
+                <CoreVoltageTable
+                     VoltageTable = "384,1150,1175,1250,
+                                     576,1125,1150,1225,
+                                     768,1100,1125,1200,
+                                     960,1075,1100,1175,
+                                     1152,1050,1075,1150,
+                                     1344,1025,1050,1125,
+                                     1536,1000,1025,1100,
+                                     9999,975,1000,1075"/>
+            </PowerManagement>
+
+            <Debug>
+                  <SHM         Enable = "0" />
+            </Debug>
+
+        </AMP>
+    </Berlin>
+</Marvell>
