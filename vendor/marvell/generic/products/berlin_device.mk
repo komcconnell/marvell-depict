@@ -68,6 +68,9 @@ PRODUCT_PACKAGES += \
     gpio_ctl
 
 PRODUCT_PACKAGES += \
+    hdmi_depict
+
+PRODUCT_PACKAGES += \
     install_recovery \
     install-vendor-recovery
 
