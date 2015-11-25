@@ -1,0 +1,5 @@
+# system_app domain rules
+allow  system_app  system_app_data_file:lnk_file   r_file_perms;
+# for Depict
+allow  system_app  sysfs:file { write };
+use_bsm_device(system_app)
