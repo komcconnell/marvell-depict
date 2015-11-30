@@ -1,0 +1,275 @@
+on early-init
+    # Adjust SMP IRQ affinity values to increase system responsiveness.
+    # Should be set before starting amp_core.
+    write /proc/irq/32/smp_affinity 2
+    write /proc/irq/57/smp_affinity 2
+
+    write /proc/sys/kernel/pid_max 32768
+
+    # Adjust page reclaim thresholds to reduce memory fragmentation.
+    # TODO: Finalize the value.
+    write /proc/sys/vm/min_free_kbytes 11523
+
+    # config shared memory low memory killer
+    write /sys/module/galois_shm/parameters/min_adj 7
+    write /sys/module/galois_shm/parameters/shrink_threshold 90
+    write /sys/module/galois_shm/parameters/start_oom_adj 0
+
+    mkdir /storage 0050 root sdcard_r
+
+    # Create mountpoint so Dalvik can mark as slave in zygotes.
+    mount tmpfs tmpfs /storage mode=0050,uid=0,gid=1028
+
+
+on init
+    mkdir /mnt/media 000 root root
+    mkdir /factory_setting 0755 root root
+    mkdir /user_setting 0755 root root
+    mkdir /firmware 0500 root root
+
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    # for backwards compatibility
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+    restorecon /storage/emulated/legacy
+
+    setprop ro.hwui.layer_cache_size 0.01
+    setprop ro.hwui.fbo_cache_size 1
+    setprop wifi.wakeup.gpio 4
+    setprop wifi.wakeup.enabled true
+
+    # TA path
+    export AMP_TA_PATH /firmware/ta
+    export AMP_FW_PATH /firmware/fw
+
+    # factory database path
+    export FACTORY_DATA_PATH /factory_data
+
+on fs
+    mount_all /fstab.berlin.s1
+
+    insmod /vendor/lib/modules/tzd.ko
+
+    class_start early_start
+
+    mount_all /fstab.berlin.s2
+
+    restorecon_recursive /user_setting
+
+    class_start second_start
+
+    mount_all /fstab.berlin.s3
+
+    setprop ro.crypto.fuse_sdcard true
+
+on post-fs
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+    insmod /vendor/lib/modules/fusion.ko
+
+    # Bluetooth
+    # power up/down interface
+    chown system system /sys/class/rfkill/rfkill0/type
+    chown system system /sys/class/rfkill/rfkill0/state
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+
+    chown system system /sys/class/rfkill/rfkill1/type
+    chown system system /sys/class/rfkill/rfkill1/state
+    chmod 0660 /sys/class/rfkill/rfkill1/state
+
+    mkdir /data/misc/wireless/ 0775 system system
+    mkdir /data/misc/wireless/sockets 0775 system system
+
+    mkdir /data/tee/ 0775 system system
+    restorecon_recursive /data/tee
+
+    # Enable gpio access for Depict power/factory_reset buttons
+    #     70 = AVIO_GPIO[1] (panel backlight power)
+    #     96 = SM_GPIO[0] (power button)
+    #    113 = SM_GPIO[17] (power button LED)
+    chmod 0666 /sys/class/gpio/export
+    write /sys/class/gpio/export 70
+    write /sys/class/gpio/export 96
+    write /sys/class/gpio/export 113
+    chmod 0666 /sys/class/gpio/gpio70/value
+    chmod 0666 /sys/class/gpio/gpio70/direction
+    chmod 0666 /sys/class/gpio/gpio113/value
+    chmod 0666 /sys/class/gpio/gpio113/direction
+    write /sys/class/gpio/gpio113/value 0
+
+on post-fs-data
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+    mkdir /data/misc/ethernet 0770 system system
+
+    # wpa_supplicant control socket for android wifi.c (android private socket)
+    mkdir /data/misc/wifi/ 0775 wifi wifi
+    mkdir /data/misc/wifi/sockets 0775 wifi wifi
+
+    # we will remap this as /storage/sdcard0 with the sdcard fuse tool
+    mkdir /data/media 0770 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    # Widevine keybox for dogfood devices (production devices should use a different keybox)
+    mkdir /data/widevine 0755 root root
+    symlink /factory_setting/kb.bin /data/widevine/kb.bin
+
+    # for playready
+    mkdir /data/mediadrm/playready 0770 mediadrm mediadrm
+    symlink /factory_setting/bgroupcert.dat /data/mediadrm/playready/bgroupcert.dat
+    symlink /factory_setting/devcerttemplate.dat /data/mediadrm/playready/devcerttemplate.dat
+
+    # Set mac address to device and fts.
+    class_start fix_start
+
+    # Quick fix for Depict -- disabling StrictMode!  Should be done in build.prop
+    setprop persist.sys.strictmode.visual 0
+    setprop persist.sys.strictmode.disable 1
+
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+    # Wifi
+    setprop wifi.interface wlan0
+    setprop wifidirect.interface p2p0
+
+    chown system system /data/dalvik-cache
+    chmod 0771 /data/dalvik-cache
+
+service kmsglogd /system/bin/kmsglogd -llogcat
+    class early_start
+    disabled
+    user root
+    group root
+
+on property:ro.debuggable=1
+    start kmsglogd
+
+service galois_amp /vendor/bin/amp_service
+    class early_start
+
+service av_settings /system/bin/av_settings
+    class second_start
+    group system
+
+service resourcemanager /system/bin/resourcemanager
+    class core
+    user system
+    group system
+
+on property:sys.boot_completed=1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 600000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
+    write /proc/sys/net/core/rmem_default 522240
+    write /proc/sys/net/core/rmem_max 1044480
+    start hdmi_depict
+
+service fix_mac /system/bin/ethconfig /factory_setting/MAC_ADDR
+    class fix_start
+    oneshot
+
+service fixdate /system/bin/fixdate
+    class fix_start
+    oneshot
+
+service wireless_init /system/bin/wireless_device_detect.sh
+    class main
+    oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+    user root
+    group root system inet wifi dhcp
+    disabled
+    class main
+    oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -ABKL
+    user root
+    group root system inet wifi dhcp
+    disabled
+    class main
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    user root
+    group root system inet wifi dhcp
+    disabled
+    class main
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    user root
+    group root system inet wifi dhcp
+    disabled
+    class main
+    oneshot
+
+service dhcpcd_eth0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_eth0 /system/bin/dhcpcd -n
+    disabled
+    oneshot
+
+service bluetoothd /system/bin/bluetoothd -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+    group bluetooth net_bt_admin misc
+    disabled
+
+service flash_recovery2 /vendor/bin/install-vendor-recovery.sh
+   class main
+   oneshot
+
+# create virtual SD card at /storage/sdcard0, based on the /data/media directory
+# daemon will drop to user/group system/media_rw after initializing
+# underlying files in /data/media will be created with user and group media_rw (1023)
+service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
+    class late_start
+
+service wpa_supplicant /system/bin/wpa_supplicant \
+    -Dnl80211 -iwlan0 -g@android:wpa_wlan0 -c/data/misc/wifi/wpa_supplicant.conf \
+    -e/data/misc/wifi/entropy.bin \
+    -O/data/misc/wifi/sockets
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service p2p_supplicant /system/bin/wpa_supplicant \
+    -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf \
+    -O/data/misc/wifi/sockets \
+    -puse_multi_chan_concurrent=1 \
+    -N -ip2p0 -Dnl80211 \
+    -c/data/misc/wifi/p2p_supplicant.conf \
+    -puse_p2p_group_interface=1use_multi_chan_concurrent=1 -g@android:wpa_wlan0 \
+    -e/data/misc/wifi/entropy.bin
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    #user root
+    #group root system inet keystore wifi dhcp
+    disabled
+    oneshot
+
+service voicecapture /system/vendor/bin/voicecapture
+    class main
+
+service hdmi_depict /system/vendor/bin/hdmi_depict off
+    class late_start
+    user root
+    group root
+    disabled
+    oneshot
+
