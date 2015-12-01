@@ -7,21 +7,40 @@ all: build
 
 build:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y
-	cd $(TOP)
+	@cd $(TOP)
 
 patch:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s patch
-	cd $(TOP)
+	@cd $(TOP)
 
 linux:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s linux
-	cd $(TOP)
+	@cd $(TOP)
+
+amp_core:
+	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s amp_core
+	@cd $(TOP)
+
+mv88de3100_sdk:
+	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s mv88de3100_sdk
+	@cd $(TOP)
 
 image:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s image
-	cd $(TOP)
+	@cd $(TOP)
 
-dpatch:
+copy_result:
+	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s copy_result
+	@cd $(TOP)
+
+#########
+dpatch_logo:
+	# This is a hack!  The Marvell 'patch' process seems to overwrite android-logo-mask.png
+	# so this must be done after their patch!
+	cp frameworks/base/core/res/assets/images/depict-logo-mask.png \
+	   $(WORK_DIR)/frameworks/base/core/res/assets/images/android-logo-mask.png
+
+dpatch: dpatch_logo
 	cp frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java \
 	   $(WORK_DIR)/frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java
 	cp external/sepolicy/app.te \
