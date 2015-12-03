@@ -103,7 +103,8 @@ do_push_update() {
 
   # NOTE: exit code from adb is always 0 (success).
   $ADB connect $TARGET_HOST
-  $ADB -s $TARGET_HOST root
+  # keith: adb connects as root by default on Arira board (no need to do the following)
+  #$ADB -s $TARGET_HOST root
   maybe_clean &&
   $ADB -s $TARGET_HOST push $update $update_dest &&
   write_command
@@ -119,8 +120,8 @@ write_command() {
   # machine). This way, we can stop early if any of the commands fail.
   # - It is much faster for ssh to do everything in one shot.
   local output=$(do_shell "mkdir -p /cache/recovery &&
-            echo '$recovery_command' > /cache/recovery/command &&
-            sync && echo '$success'" 3>&2 2>&1 1>&3 3>&-)
+            echo $recovery_command > /cache/recovery/command &&
+            sync && echo $success" 3>&2 2>&1 1>&3 3>&-)
 
   # $output ends with \r (= carriage return)
   output=${output%$'\r'}
