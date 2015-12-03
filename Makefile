@@ -1,5 +1,5 @@
 TOP		:= `pwd`
-WORK_DIR	:= /work/marvell/workspace_test
+WORK_DIR	:= /work/marvell/workspace.5.1
 BUILD_DIR	:= $(WORK_DIR)/vendor/marvell/build
 
 all: build
@@ -12,6 +12,7 @@ build:
 patch:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s patch
 	@cd $(TOP)
+	make dpatch
 
 linux:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s linux
@@ -86,3 +87,5 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell/generic/system/core/rootdir/init.berlin.rc
 	cp vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/berlin_config_sw.xml \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/berlin_config_sw.xml
+	cp vendor/marvell/generic/development/tools/reinstall/reinstall.sh \
+	   $(WORK_DIR)/vendor/marvell/generic/development/tools/reinstall/reinstall.sh
