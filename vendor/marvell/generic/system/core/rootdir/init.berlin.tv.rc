@@ -1,0 +1,19 @@
+on init
+    mkdir /factory_data 0755 root root
+
+on fs
+    restorecon /factory_data
+
+on property:ro.service.av_settings.inited=1
+    start fsservice
+
+service fsservice /system/vendor/bin/start_fsservice
+    class main
+    disabled
+
+on property:init.svc.bootanim=running
+    mkdir /data/boot_animation_ready 0777 root root
+
+service panel_power_on /system/vendor/bin/test_disp_lvds -p on
+    class core
+    oneshot
