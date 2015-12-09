@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     int port = 38;
     int value = 0;
 
-    sleep(3);
+    //sleep(3);
     
     SM_GPIO_PortWrite_IOCTL(port, 1);
     
