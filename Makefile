@@ -1,6 +1,7 @@
 TOP		:= `pwd`
 WORK_DIR	:= /work/marvell/workspace.5.1
 BUILD_DIR	:= $(WORK_DIR)/vendor/marvell/build
+CERTS_DIR	= ~/.android-certs
 
 all: build
 	@echo "Done!"
@@ -33,6 +34,23 @@ image:
 copy_result:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s copy_result
 	@cd $(TOP)
+
+#########
+# Use Depict release keys for signing.  Note: only those who know the password
+# should do this!
+sign_release:
+	cd $(WORK_DIR) && \
+	./build/tools/releasetools/sign_target_files_apks \
+		-o \
+		-d $(CERTS_DIR) \
+		out/target/product/bg2q4k_tpv2k15/obj/PACKAGING/target_files_intermediates/bg2q4k_tpv2k15-target_files-*.zip \
+		out/target/product/bg2q4k_tpv2k15/signed-target_files.zip && \
+	./build/tools/releasetools/ota_from_target_files \
+		-k $(CERTS_DIR)/releasekey \
+		out/target/product/bg2q4k_tpv2k15/signed-target_files.zip \
+		out/target/product/bg2q4k_tpv2k15/signed-ota_update.zip
+	@cd $(TOP)
+
 
 #########
 dpatch_logo:
@@ -85,6 +103,8 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell/generic/sepolicy/system_app.te
 	cp vendor/marvell/generic/system/core/rootdir/init.berlin.rc \
 	   $(WORK_DIR)/vendor/marvell/generic/system/core/rootdir/init.berlin.rc
+	cp vendor/marvell/generic/system/core/rootdir/init.berlin.tv.rc \
+	   $(WORK_DIR)/vendor/marvell/generic/system/core/rootdir/init.berlin.tv.rc
 	cp vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/berlin_config_sw.xml \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/berlin_config_sw.xml
 	cp vendor/marvell/generic/development/tools/reinstall/reinstall.sh \

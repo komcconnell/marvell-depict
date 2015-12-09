@@ -278,6 +278,8 @@ void powerdown_sd(int id)
 	}
 	dbg_printf(PRN_DBG,"power down sd%d.\n", id);
 }
+
+
 void powerdown_unused_module()
 {
 	powerdown_smartcard(0);
@@ -289,6 +291,8 @@ void powerdown_unused_module()
 	//disable G-eth
 	powerdown_eth(0);
 }
+
+
 
 unsigned int get_stages_bg2q_platform_initialize(void)
 {
@@ -333,10 +337,10 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
                     GPIO_PortSetInOut(16, 0);    // soc_gpio[16] for HDMI-ARC-SEL2
                     GPIO_PortWrite(16, 0);
 					
-					SM_GPIO_PortSetInOut (18, 1);  // reset WiFi pin 54  
-					mdelay(100);
+		    SM_GPIO_PortSetInOut (18, 1);  // reset WiFi pin 54  
+		    mdelay(100);
                     SM_GPIO_PortWrite(18, 0);
-					mdelay(100);
+		    mdelay(100);
                     SM_GPIO_PortWrite(18, 1);
 
 
@@ -390,6 +394,14 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
 
                 set_power_usb0(1);
                 set_power_usb1(1);
+
+                // why in BOOTLOADER_LOADKERNEL_POSTSTAGE?  in this stage, we can access Bootmode
+                extern int Bootmode;
+                dbg_printf(PRN_ERR,"\n=====bootmode:%d\n", Bootmode);
+                if (BOOTMODE_NORMAL == Bootmode) {
+                    SM_GPIO_PortSetInOut (38, 1);  // reset panel backlight, min reset time: 350ms
+                    SM_GPIO_PortWrite(38, 0);      // turn it on when android boot animation starts, to fix pink flash issue
+                }
             }
             break;
         default:

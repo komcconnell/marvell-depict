@@ -13,6 +13,13 @@ service fsservice /system/vendor/bin/start_fsservice
 
 on property:init.svc.bootanim=running
     mkdir /data/boot_animation_ready 0777 root root
+    start backlight_depict
+
+service backlight_depict /system/vendor/bin/backlight_depict
+    user root
+    group root
+    disabled
+    oneshot
 
 service panel_power_on /system/vendor/bin/test_disp_lvds -p on
     class core
