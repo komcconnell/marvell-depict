@@ -89,6 +89,11 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell/generic/frameworks/hdmi_depict/Android.mk
 	cp vendor/marvell/generic/frameworks/hdmi_depict/hdmi_depict.c \
 	   $(WORK_DIR)/vendor/marvell/generic/frameworks/hdmi_depict/hdmi_depict.c
+	mkdir -p $(WORK_DIR)/vendor/marvell/generic/frameworks/backlight_depict
+	cp vendor/marvell/generic/frameworks/backlight_depict/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/generic/frameworks/backlight_depict/Android.mk
+	cp vendor/marvell/generic/frameworks/backlight_depict/backlight_depict.c \
+	   $(WORK_DIR)/vendor/marvell/generic/frameworks/backlight_depict/backlight_depict.c
 	cp vendor/marvell/generic/overlays/patches.config \
 	   $(WORK_DIR)/vendor/marvell/generic/overlays/patches.config
 	cp vendor/marvell/generic/products/berlin_device.mk \
@@ -99,6 +104,8 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell/generic/sepolicy/file_contexts
 	cp vendor/marvell/generic/sepolicy/hdmi_depict.te \
 	   $(WORK_DIR)/vendor/marvell/generic/sepolicy/hdmi_depict.te
+	cp vendor/marvell/generic/sepolicy/backlight_depict.te \
+	   $(WORK_DIR)/vendor/marvell/generic/sepolicy/backlight_depict.te
 	cp vendor/marvell/generic/sepolicy/system_app.te \
 	   $(WORK_DIR)/vendor/marvell/generic/sepolicy/system_app.te
 	cp vendor/marvell/generic/system/core/rootdir/init.berlin.rc \

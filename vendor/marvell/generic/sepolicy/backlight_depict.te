@@ -1,0 +1,27 @@
+
+# backlight_depict domain type
+type backlight_depict, domain;
+type backlight_depict_exec, exec_type, file_type;
+
+# backlight_depict domain macros
+init_daemon_domain(backlight_depict)
+use_amp_device(backlight_depict)
+
+
+# backlight_depict domain rules
+allow  backlight_depict  self:process  { execmem };
+allow  backlight_depict  self:capability  { sys_nice chown fowner fsetid sys_module dac_override };
+allow  backlight_depict  backlight_depict_exec:file { execute_no_trans };
+
+allow  backlight_depict  system_file:file  x_file_perms;
+allow  backlight_depict  sysfs:file  { write };
+allow  backlight_depict  shell_exec:file  rx_file_perms;
+allow  backlight_depict  firmware_file:dir  r_dir_perms;
+allow  backlight_depict  firmware_file:file  r_file_perms;
+allow  backlight_depict  i2c_chr_device:chr_file  rw_file_perms;
+allow  backlight_depict  domain:unix_dgram_socket { sendto };
+
+
+allow  backlight_depict  device:lnk_file { create };
+allow  backlight_depict  cpm_chr_device:chr_file  rw_file_perms;
+

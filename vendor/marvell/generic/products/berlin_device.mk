@@ -68,7 +68,8 @@ PRODUCT_PACKAGES += \
     gpio_ctl
 
 PRODUCT_PACKAGES += \
-    hdmi_depict
+    hdmi_depict \
+    backlight_depict
 
 PRODUCT_PACKAGES += \
     install_recovery \

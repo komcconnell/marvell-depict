@@ -25,6 +25,7 @@
 /system/bin/kmsglogd                        u:object_r:kmsglogd_exec:s0
 /system/bin/fixdate                         u:object_r:fixdate_exec:s0
 
+/system/vendor/bin/backlight_depict         u:object_r:backlight_depict_exec:s0
 /system/vendor/bin/hdmi_depict              u:object_r:hdmi_depict_exec:s0
 /system/vendor/bin/amp_service              u:object_r:ampservice_exec:s0
 /system/vendor/bin/ampaudioloopbackservice  u:object_r:ampaudioloopbackservice_exec:s0
