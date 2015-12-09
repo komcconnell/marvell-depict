@@ -401,6 +401,7 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
                 if (BOOTMODE_NORMAL == Bootmode) {
                     SM_GPIO_PortSetInOut (38, 1);  // reset panel backlight, min reset time: 350ms
                     SM_GPIO_PortWrite(38, 0);      // turn it on when android boot animation starts, to fix pink flash issue
+                    mdelay(350);
                 }
             }
             break;
