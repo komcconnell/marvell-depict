@@ -111,7 +111,8 @@ BOARD_SEPOLICY_UNION := \
     wireless_init.te \
     wpa.te \
     zygote.te \
-    hdmi_depict.te
+    hdmi_depict.te \
+    backlight_depict.te
 
 
 # Default hardware platform and buffer number
