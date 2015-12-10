@@ -354,6 +354,11 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
                     SM_GPIO_PortWrite(44, 1);
                     dbg_printf(PRN_RES,"\nI2C switch set as 1\n");
 
+                    SM_GPIO_PortSetInOut (38, 1);  // reset panel backlight, min reset time: 350ms
+                    SM_GPIO_PortWrite(38, 0);      // turn off
+                    mdelay(350);
+                    SM_GPIO_PortWrite(38, 1);      // turn it on
+
                     dbg_printf(PRN_RES,"\n%s %s [%s %s]\n", BOARD_TYPE, CHIP_VERSION, __DATE__, __TIME__);
 #if defined(DEBUG)
                     if ((uiBoot != MV_SoC_STATE_WARMUP_1) || (uiWarmDown_2_Linux_Addr == 0xFFFFFFFF)) {
@@ -395,14 +400,6 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
                 set_power_usb0(1);
                 set_power_usb1(1);
 
-                // why in BOOTLOADER_LOADKERNEL_POSTSTAGE?  in this stage, we can access Bootmode
-                extern int Bootmode;
-                dbg_printf(PRN_ERR,"\n=====bootmode:%d\n", Bootmode);
-                if (BOOTMODE_NORMAL == Bootmode) {
-                    SM_GPIO_PortSetInOut (38, 1);  // reset panel backlight, min reset time: 350ms
-                    SM_GPIO_PortWrite(38, 0);      // turn it on when android boot animation starts, to fix pink flash issue
-                    mdelay(350);
-                }
             }
             break;
         default:
