@@ -354,7 +354,7 @@ unsigned int bg2q_platform_initialize(unsigned int boot_stage)
                     SM_GPIO_PortWrite(44, 1);
                     dbg_printf(PRN_RES,"\nI2C switch set as 1\n");
 
-                    SM_GPIO_PortSetInOut (38, 1);  // reset panel backlight, min reset time: 350ms
+                    SM_GPIO_PortSetInOut (38, 0);  // reset panel backlight, min reset time: 350ms
                     SM_GPIO_PortWrite(38, 0);      // turn off
                     mdelay(350);
                     SM_GPIO_PortWrite(38, 1);      // turn it on
