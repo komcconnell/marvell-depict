@@ -1,7 +1,10 @@
 TOP		:= `pwd`
 WORK_DIR	:= /work/marvell/workspace.5.1
+TMPDIR		= /work/tmp
 BUILD_DIR	:= $(WORK_DIR)/vendor/marvell/build
 CERTS_DIR	= ~/.android-certs
+DATE		:= `date +%m%d%y`
+RELEASE_NAME	:= $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
 
 all: build
 	@echo "Done!"
@@ -116,3 +119,9 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/berlin_config_sw.xml
 	cp vendor/marvell/generic/development/tools/reinstall/reinstall.sh \
 	   $(WORK_DIR)/vendor/marvell/generic/development/tools/reinstall/reinstall.sh
+
+release:
+	cd $(WORK_DIR)/out/target/product/bg2q4k_tpv2k15 && \
+		tar cvfz $(RELEASE_NAME) ./eMMCimg
+	@echo "Release image found in: $(RELEASE_NAME)"
+	@cd $(TOP)
