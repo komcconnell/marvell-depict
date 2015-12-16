@@ -119,6 +119,15 @@ static int cpm_reset_timer(void);
         }                                                       \
     }while(0)
 
+#if 1
+// comment out error log
+#define CHECK_CORE_REGULATOR(_ret)                                   \
+    do{                                                         \
+        if (!vcore_reg) {                                     \
+            return (_ret);                                      \
+        }                                                       \
+    }while(0)
+#else
 #define CHECK_CORE_REGULATOR(_ret)                                   \
     do{                                                         \
         if (!vcore_reg) {                                     \
@@ -126,6 +135,7 @@ static int cpm_reset_timer(void);
             return (_ret);                                      \
         }                                                       \
     }while(0)
+#endif  
 
 #define CHECK_TEE_INIT(_ret)                                   \
     do{                                                         \
