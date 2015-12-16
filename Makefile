@@ -73,6 +73,8 @@ dpatch: dpatch_logo
 	   $(WORK_DIR)/vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/bootloader/customization/bg2dtva0/bg2dtv_poplar/platform_customization.c
 	cp vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/system_manager/core/source/sm_power.c \
 	   $(WORK_DIR)/vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/system_manager/core/source/sm_power.c
+	cp vendor/marvell-sdk/ampsdk/amp/src/dev/core/kernel/cpm/source/cpm_driver.c \
+	   $(WORK_DIR)/vendor/marvell-sdk/ampsdk/amp/src/dev/core/kernel/cpm/source/cpm_driver.c
 	mkdir -p $(WORK_DIR)/vendor/marvell/bg2q4k_tpv2k15/test_sample/depict_adc
 	mkdir -p $(WORK_DIR)/vendor/marvell/bg2q4k_tpv2k15/test_sample/depict_gpio
 	cp vendor/marvell/bg2q4k_tpv2k15/AndroidBoard.mk \
