@@ -127,3 +127,6 @@ release:
 		tar cvfz $(RELEASE_NAME) ./eMMCimg
 	@echo "Release image found in: $(RELEASE_NAME)"
 	@cd $(TOP)
+
+tag_release:
+	git tag release_$(DATE) master
