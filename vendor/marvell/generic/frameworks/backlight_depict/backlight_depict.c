@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+extern int SM_GPIO_PortSetInOut(int port, int in);
 extern int SM_GPIO_PortRead_IOCTL(int port, int *value);
 extern int SM_GPIO_PortWrite_IOCTL(int port, int value);
 
@@ -46,6 +47,8 @@ int main(int argc, char *argv[])
 {
     int port = 38;
     int value = 0;
+
+    //SM_GPIO_PortSetInOut(port, 0); // make sure this is set for output
 
     SM_GPIO_PortWrite_IOCTL(port, 0); // turn off panel backlight
 
