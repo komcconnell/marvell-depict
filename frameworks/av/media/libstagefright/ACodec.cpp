@@ -553,7 +553,20 @@ status_t ACodec::allocateBuffersOnPort(OMX_U32 portIndex) {
 
             for (OMX_U32 i = 0; i < def.nBufferCountActual; ++i) {
                 sp<IMemory> mem = mDealer[portIndex]->allocate(def.nBufferSize);
+#if 0 // keith
                 CHECK(mem.get() != NULL);
+#else
+		// keith - can't assert and send SIGABORT signal which kills the player!
+		// not sure why we occasionally have still videos which trigger this.  Maybe
+		// an H.265 transcoder bug?
+		if (mem.get() == NULL) {
+		    ALOGE("[%s:%s:%d] OOM! i=%u, count=%u, portIndex=%u, totalSize=%ld, bufferSize=%ld\n",
+			__FILE__, __FUNCTION__, __LINE__, i, def.nBufferCountActual,
+			portIndex, totalSize, def.nBufferSize);
+		    err = 0x90000000; // just picked a random error from vendor range
+		    return err;
+		}
+#endif
 
                 BufferInfo info;
                 info.mStatus = BufferInfo::OWNED_BY_US;

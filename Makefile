@@ -65,6 +65,8 @@ dpatch_logo:
 dpatch: dpatch_logo
 	cp frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java \
 	   $(WORK_DIR)/frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java
+	cp frameworks/av/media/libstagefright/ACodec.cpp \
+	   $(WORK_DIR)/frameworks/av/media/libstagefright/ACodec.cpp
 	cp external/sepolicy/app.te \
 	   $(WORK_DIR)/external/sepolicy/app.te
 	cp vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/common/pinmux_setting/bg2dtv_poplar/pinmux_setting.h \
