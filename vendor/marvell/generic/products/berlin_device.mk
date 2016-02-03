@@ -69,7 +69,12 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     hdmi_depict \
-    backlight_depict
+    backlight_depict \
+    DepictDesktop \
+    DepictFramePlayerAndroid \
+    DepictSettingsManager \
+    DepictUpgradeManager \
+    DepictFrameService
 
 PRODUCT_PACKAGES += \
     install_recovery \
