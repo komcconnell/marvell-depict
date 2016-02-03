@@ -62,7 +62,31 @@ dpatch_logo:
 	cp frameworks/base/core/res/assets/images/depict-logo-mask.png \
 	   $(WORK_DIR)/frameworks/base/core/res/assets/images/android-logo-mask.png
 
-dpatch: dpatch_logo
+dpatch_middleware:
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictDesktop
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFramePlayerAndroid
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictSettingsManager
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFrameService
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictNodeService
+	cp vendor/marvell/prebuilts/generic/apps/DepictDesktop/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictDesktop/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictDesktop/DepictDesktop.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictDesktop/DepictDesktop.apk
+	cp vendor/marvell/prebuilts/generic/apps/DepictFramePlayerAndroid/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFramePlayerAndroid/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictFramePlayerAndroid/DepictFramePlayerAndroid.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFramePlayerAndroid/DepictFramePlayerAndroid.apk
+	cp vendor/marvell/prebuilts/generic/apps/DepictSettingsManager/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictSettingsManager/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictSettingsManager/DepictSettingsManager.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictSettingsManager/DepictSettingsManager.apk
+	cp vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk
+
+dpatch: dpatch_logo dpatch_middleware
 	cp frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java \
 	   $(WORK_DIR)/frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java
 	cp frameworks/av/media/libstagefright/ACodec.cpp \
