@@ -74,7 +74,8 @@ PRODUCT_PACKAGES += \
     DepictFramePlayerAndroid \
     DepictSettingsManager \
     DepictUpgradeManager \
-    DepictFrameService
+    DepictFrameService \
+    DepictNodeService
 
 PRODUCT_PACKAGES += \
     install_recovery \
@@ -334,6 +335,21 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(foreach file,$(notdir $(wildcard $(TARGET_MARVELL_AMP_TOP)/lib/modules/*.ko)),\
         $(TARGET_MARVELL_AMP_TOP)/lib/modules/$(file):system/vendor/lib/modules/$(file))
+
+# Depict stuff
+define kfind-subdir-assets
+$(if $(1),$(patsubst ./%,%, \
+        $(shell if [ -d $(1) ] ; then cd $(1) ; find ./ -not -name '.*' -and -type f -and -not -type l ; fi)), \
+        $(warning Empty argument supplied to find-subdir-assets) \
+)
+endef
+
+PRODUCT_COPY_FILES += \
+        $(foreach f,$(call kfind-subdir-assets,$(TARGET_MARVELL_AMP_TOP)/depict/node_modules),\
+            $(TARGET_MARVELL_AMP_TOP)/depict/node_modules/$(f):system/vendor/lib/node_modules/$(f))
+
+PRODUCT_COPY_FILES += \
+            $(TARGET_MARVELL_AMP_TOP)/depict/dial.js:system/vendor/lib/dial.js
 
 PRODUCT_COPY_FILES += \
     vendor/marvell/generic/frameworks/wifi/dhcpcd.conf:system/etc/wifi/dhcpcd.conf \
