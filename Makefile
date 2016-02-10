@@ -30,13 +30,19 @@ mv88de3100_sdk:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s mv88de3100_sdk
 	@cd $(TOP)
 
-image:
+image: dpatch_middleware
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s image
 	@cd $(TOP)
 
 copy_result:
 	cd $(WORK_DIR) && ./vendor/marvell/build/build_androidtv -e y -s copy_result
 	@cd $(TOP)
+
+all_but_patch: dpatch linux amp_core mv88de3100_sdk image copy_result
+	@echo "Done all but patch!"
+
+all_but_linux: dpatch amp_core mv88de3100_sdk image copy_result
+	@echo "Done all but linux!"
 
 #########
 # Use Depict release keys for signing.  Note: only those who know the password
@@ -69,6 +75,10 @@ dpatch_middleware:
 	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager
 	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFrameService
 	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictNodeService
+	mkdir -p $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/node_modules
+	rm -rf $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/node_modules/*
+	cp vendor/marvell/generic/products/berlin_device.mk \
+	   $(WORK_DIR)/vendor/marvell/generic/products/berlin_device.mk
 	cp vendor/marvell/prebuilts/generic/apps/DepictDesktop/Android.mk \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictDesktop/Android.mk
 	cp vendor/marvell/prebuilts/generic/apps/DepictDesktop/DepictDesktop.apk \
@@ -85,6 +95,16 @@ dpatch_middleware:
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/Android.mk
 	cp vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk
+	cp vendor/marvell/prebuilts/generic/apps/DepictNodeService/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictNodeService/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictNodeService/DepictNodeService.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictNodeService/DepictNodeService.apk
+	cp vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/lib/* \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/lib
+	cp -R vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/node_modules/* \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/node_modules/
+	cp vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/dial.js \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/bg2q4k_tpv2k15/amp/depict/dial.js
 
 dpatch: dpatch_logo dpatch_middleware
 	cp frameworks/base/policy/src/com/android/internal/policy/impl/keyguard/KeyguardServiceDelegate.java \
@@ -127,8 +147,6 @@ dpatch: dpatch_logo dpatch_middleware
 	   $(WORK_DIR)/vendor/marvell/generic/frameworks/backlight_depict/backlight_depict.c
 	cp vendor/marvell/generic/overlays/patches.config \
 	   $(WORK_DIR)/vendor/marvell/generic/overlays/patches.config
-	cp vendor/marvell/generic/products/berlin_device.mk \
-	   $(WORK_DIR)/vendor/marvell/generic/products/berlin_device.mk
 	cp vendor/marvell/generic/products/BoardConfigCommon.mk \
 	   $(WORK_DIR)/vendor/marvell/generic/products/BoardConfigCommon.mk
 	cp vendor/marvell/generic/sepolicy/file_contexts \
