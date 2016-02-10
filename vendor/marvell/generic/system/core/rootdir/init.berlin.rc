@@ -273,3 +273,7 @@ service hdmi_depict /system/vendor/bin/hdmi_depict off
     disabled
     oneshot
 
+service monitord /system/vendor/bin/monitord
+    class early_start
+    user  root
+    group root
