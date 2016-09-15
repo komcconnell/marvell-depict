@@ -22,7 +22,8 @@ on early-init
 
 
 on init
-    mkdir /mnt/media 000 root root
+    mkdir /mnt/media 0777 root root
+
     mkdir /factory_setting 0755 root root
     mkdir /user_setting 0755 root root
     mkdir /firmware 0500 root root
