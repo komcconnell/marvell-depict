@@ -1651,8 +1651,7 @@ var startApplication = function(appName) {
                 privSettings.doRestart = false;
             }
 
-            if (!isAndroid) {
-                if (depictFrame.state == "running") {
+            if (!isAndroid && (depictFrame.state == "running")) {
                     // App is already running.  If parameters have changed, modify
                     // the current parameters, otherwise, this request has no effect.
 
@@ -1660,8 +1659,10 @@ var startApplication = function(appName) {
 
                     LogInfo("** appName: " + appName + "already running!  Ignore launch!!");
                     statusCode = 200;
-                }
-            } else {
+                    return statusCode;
+            }
+
+            {
                 // App isn't currently running.  Launch!
 
                 // NOTE: The frame_receiver_server must be running prior to this call!
