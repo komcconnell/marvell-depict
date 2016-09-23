@@ -36,6 +36,8 @@ var currentState = STATE_INITIAL;
 
 var currentFriendlyName = null;
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 // Generate a random "friendly" name for this frame
 var generateFriendlyName = function() {
     if (currentFriendlyName === null) {
@@ -144,7 +146,8 @@ var express = require('express'),
     body_parser = require('body-parser'),
     path = require('path'),
     dns = require('dns'),
-    fs = require('fs');
+    fs = require('fs'),
+    request = require('request');
 
 var os = require('os');
 
@@ -517,45 +520,25 @@ var checkInternet = function(cb)
         return;
     }
 
-    // Using Google's public DNS servers
-    dns.setServers(['8.8.8.8', '8.8.4.4']);
+    if (ipaddr.indexOf("192.168.43.") != -1) {
+        // Local hotspot (can't access any outside WAN addresses)
+        LogDebug("Detected Hotspot!");
+        prevIpAddress = ipaddr;
+        cb(EVENT_CONNECT_WIFI);
+        return;
+    }
 
-    dns.resolve('google.com', function(err, addresses) {
-        var e;
-        var len = (addresses == undefined) ? 0 : addresses.length;
-        LogDebug("checkInternet: Resolve returned: err=" + err + ", addresses=" + addresses);
-        if (len == 0 || err)
-        {
-            if (len == 0 && ipaddr.indexOf("192.168.43.") != -1)
-            {
-                // Local hotspot (can't access any outside WAN addresses)
-                LogDebug("Detected Hotspot!");
-                e = EVENT_CONNECT_WIFI;
-            }
-            else
-            {
-                LogInfo("Restarting network connections! error code: " + err.code);
-                LogInfo("--- len = " + len + ", ipaddr = " + ipaddr);
-                e = EVENT_STOP;
-            }
-        }
-        else
-        {
+    request.get({
+        url: "https://www.google.com",
+        timeout: 2000
+    }, function(err, res, body) {
+        if (err) {
+            LogInfo("Restarting network connections! error: " + err);
+            e = EVENT_DISCONNECT_WAN;
+        } else {
             e = EVENT_CONNECT_WAN;
-            for (var i = 0;  i < len;  i++) {
-                // Make sure the local router isn't redirecting the request
-                if (addresses[i].indexOf("10.") == 0 ||
-                    addresses[i].indexOf("192.168.") == 0 ||
-                    addresses[i].indexOf("172.16.") == 0)
-                {
-                    LogDebug("checkInternet: google.com redirected to local router or hotspot!");
-                    e = EVENT_DISCONNECT_WAN;
-                    break;
-                }
-            }
         }
         cb(e);
-
         return;
     });
 };
@@ -1952,7 +1935,7 @@ var refreshFrame = function() {
 }
 
 
-var TIMER_TICK_INTERVAL_MSEC = 2000;
+var TIMER_TICK_INTERVAL_MSEC = 6000;
 var connectionTimerId = null;
 
 
@@ -2317,7 +2300,9 @@ var stateMachine = function(evt) {
                     break;
 
                 case EVENT_DISCONNECT_WAN:
-                    currentState = STATE_DISCONNECTED_WAN;
+                    LogInfo("stateMachine: Starting with only WiFi!");
+                    onConnectWifi();
+                    currentState = STATE_CONNECTED_WIFI;
                     break;
 
                 case EVENT_STOP:
@@ -2348,7 +2333,7 @@ var stateMachine = function(evt) {
                     break;
 
                 case EVENT_DISCONNECT_WAN:
-                    onDisconnectWAN();
+                    //onDisconnectWAN();
                     break;
 
                 case EVENT_STOP:
