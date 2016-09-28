@@ -789,6 +789,30 @@ var startHotspotServer = function()
             ":\n" + err.stack);
     });
 
+    if (ipaddr.indexOf("192.168.43.") == -1) {
+        // We have a valid Wi-Fi connection which isn't a "portable hotspot".
+        // Let's record that we've at least once been able to connect using the
+        // current Wi-Fi user/password.  This will allow us to achieve basic
+        // communication between the client and the Frame.
+        readUserSettings(settings);
+        try {
+            // On development boards, we might have wired ethernet, so
+            // explicitly checking that ssid is something valid first.  Not
+            // strictly required but, what the heck!  Makes it easier.
+            if (settings.network.ssid != "") {
+                settings.network.valid = true;
+                if (privSettings.pending_friendly_name != null) {
+                    settings.friendly_name = privSettings.pending_friendly_name;
+                    privSettings.pending_friendly_name = null;
+                }
+                writeUserSettings(settings);
+            }
+        }
+        catch(e) {
+            LogErr("Unable to set settings.network.valid=true");
+        }
+    }
+
     hotspotServerStarted = true;
 }
 
@@ -2178,30 +2202,6 @@ var startServer = function() {
     if (ipaddr == '0.0.0.0') {
         LogInfo("Networking not yet started!  Can't yet start DIAL server!");
         return;
-    }
-
-    // If we're able to connect to WAN, that means that we also have a valid
-    // Wi-Fi connection.  Let's record that we've at least once been able to
-    // connect using the current Wi-Fi user/password.  This will cause the
-    // DepictSettingsManager try more aggressively to use this network in
-    // the future should Wi-Fi go down.  Otherwise, it will go into "Setup"
-    // mode and enable the hotspot access point.
-    readUserSettings(settings);
-    try {
-        // On development boards, we might have wired ethernet, so
-        // explicitly checking that ssid is something valid first.  Not
-        // strictly required but, what the heck!  Makes it easier.
-        if (settings.network.ssid != "") {
-            settings.network.valid = true;
-            if (privSettings.pending_friendly_name != null) {
-                settings.friendly_name = privSettings.pending_friendly_name;
-                privSettings.pending_friendly_name = null;
-            }
-            writeUserSettings(settings);
-        }
-    }
-    catch(e) {
-        LogErr("Unable to set settings.network.valid=true");
     }
 
     while (!dialServerStarted && !appServerStarted) {
