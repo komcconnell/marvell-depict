@@ -1595,6 +1595,16 @@ hotspot.post('/command/*', function(req, res) {
             }
 
             return;
+
+        case 'call911':
+            LogInfo("Call 911: uploading logs to Depict server!");
+            if (isPublic || isOwner) {
+                call911();
+            } else {
+                statusCode = 403;
+            }
+            break;
+
         default:
             LogErr("Invalid command: " + cmd);
             statusCode = 400;
@@ -1897,6 +1907,71 @@ var powerManager = function(command) {
     return statusCode;
 }
 
+var depictLogger = function(command) {
+    var statusCode = 404;
+
+    // On Android, we use the activity manager (am) to start the depict logger
+
+    if (!isAndroid) {
+        LogWarn("depictLogger unimplemented on Linux!");
+        return statusCode;
+    }
+
+    var activityManager = 'am';
+    var args;
+    var action;
+
+    switch (command) {
+        case "call911": action = 'CALL_911'; break;
+        default:
+            LogErr("Invalid power manager command: " + command);
+            return statusCode;
+    }
+
+    args = [
+        'start',
+        '--user',
+        '0',
+        '-W',
+        '-a',
+        'com.depict.action.' + action,
+        '--activity-single-top',
+        '-n',
+        'com.depict.frame.DepictFrameService/.DepictLoggerActivity'
+    ];
+
+    LogInfo("** DepictLogger action: " + action);
+    LogInfo("** Spawning process: " + activityManager + ": args = " + args);
+
+    var proc = child_process.spawn(activityManager, args);
+
+    if (proc) {
+        proc.stdout.on('data', function(data) {
+	         LogDebug('[' + activityManager + '] stdout: ' + data);
+        });
+
+        proc.stderr.on('data', function(data) {
+	         LogDebug('[' + activityManager + '] stderr: ' + data);
+        });
+
+        proc.on('close', function(code) {
+	         LogDebug('[' + activityManager + '] exited with code ' + code);
+        });
+
+        proc.on('exit', function(msg) {
+	         LogDebug('[' + activityManager + '] Exited: ' + msg);
+        });
+
+        proc.on('error', function(msg) {
+	         LogDebug('[' + activityManager + '] Error: ' + msg);
+        });
+
+        statusCode = 201;
+    }
+
+    return statusCode;
+}
+
 
 // Reboot platform
 var rebootSystem = function() {
@@ -1920,6 +1995,12 @@ var setStandby = function(pwr) {
 // Reset user settings and reboot
 var factoryReset = function() {
     powerManager('factory_reset');
+}
+
+
+// Upload logs to Depict server
+var call911 = function() {
+    depictLogger('call911');
 }
 
 

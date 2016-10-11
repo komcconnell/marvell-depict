@@ -1,10 +1,13 @@
-TOP		:= `pwd`
-WORK_DIR	:= /work/marvell/workspace.5.1
-TMPDIR		= /work/tmp
-BUILD_DIR	:= $(WORK_DIR)/vendor/marvell/build
-CERTS_DIR	= ~/.android-certs
-DATE		:= `date +%m%d%y`
-RELEASE_NAME	:= $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
+TOP		 := `pwd`
+WORK_DIR	 := /work/marvell/workspace.5.1
+TMPDIR		 = /work/tmp
+BUILD_DIR	 := $(WORK_DIR)/vendor/marvell/build
+CERTS_DIR	 = ~/.android-certs
+DATE		 := `date +%m%d%y`
+RELEASE_NAME	 := $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
+
+OTA_VERSION	 := 1.21
+OTA_RELEASE_NAME := $(TMPDIR)/depict_ota_debug_$(OTA_VERSION)_$(DATE).zip
 
 all: build
 	@echo "Done!"
@@ -62,6 +65,28 @@ sign_release:
 
 
 #########
+
+release:
+	cd $(WORK_DIR)/out/target/product/bg2q4k_tpv2k15 && \
+		tar cvfz $(RELEASE_NAME) ./eMMCimg
+	@echo "Release image found in: $(RELEASE_NAME)"
+	@cd $(TOP)
+
+ota_release:
+	cd $(WORK_DIR)/out/target/product/bg2q4k_tpv2k15 && \
+		cp bg2q4k_tpv2k15-ota-eng.*.zip $(OTA_RELEASE_NAME)
+	@echo "OTA upgrade image found in: $(OTA_RELEASE_NAME)"
+	@cd $(TOP)
+
+
+tag_release:
+	git tag release_$(DATE) master
+
+ota_install: ota_release
+	@echo "Installing OTA upgrade image $(OTA_RELEASE_NAME) via adb.  This will take several minutes..."
+	$(WORK_DIR)/vendor/marvell/generic/development/tools/reinstall/reinstall.sh \
+	    -f $(OTA_RELEASE_NAME) $(FRAME_IPADDR)
+
 dpatch_logo:
 	# This is a hack!  The Marvell 'patch' process seems to overwrite android-logo-mask.png
 	# so this must be done after their patch!
@@ -174,11 +199,3 @@ dpatch: dpatch_logo dpatch_middleware
 	cp vendor/marvell/generic/development/tools/reinstall/reinstall.sh \
 	   $(WORK_DIR)/vendor/marvell/generic/development/tools/reinstall/reinstall.sh
 
-release:
-	cd $(WORK_DIR)/out/target/product/bg2q4k_tpv2k15 && \
-		tar cvfz $(RELEASE_NAME) ./eMMCimg
-	@echo "Release image found in: $(RELEASE_NAME)"
-	@cd $(TOP)
-
-tag_release:
-	git tag release_$(DATE) master
