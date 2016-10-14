@@ -6,7 +6,7 @@ CERTS_DIR	 = ~/.android-certs
 DATE		 := `date +%m%d%y`
 RELEASE_NAME	 := $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
 
-OTA_VERSION	 := 1.21
+OTA_VERSION	 := 1.22
 OTA_RELEASE_NAME := $(TMPDIR)/depict_ota_debug_$(OTA_VERSION)_$(DATE).zip
 
 all: build
@@ -85,7 +85,7 @@ tag_release:
 ota_install: ota_release
 	@echo "Installing OTA upgrade image $(OTA_RELEASE_NAME) via adb.  This will take several minutes..."
 	$(WORK_DIR)/vendor/marvell/generic/development/tools/reinstall/reinstall.sh \
-	    -f $(OTA_RELEASE_NAME) $(FRAME_IPADDR)
+	    -f $(WORK_DIR)/out/target/product/bg2q4k_tpv2k15/bg2q4k_tpv2k15-ota-eng.*.zip $(FRAME_IPADDR)
 
 dpatch_logo:
 	# This is a hack!  The Marvell 'patch' process seems to overwrite android-logo-mask.png
