@@ -4,6 +4,6 @@ allow  system_app  system_app_data_file:lnk_file   r_file_perms;
 # for Depict
 allow system_app sysfs:file { write };
 allow system_app cache_file:dir { write add_name remove_name };
-allow system_app cache_file:file { write create open };
+allow system_app cache_file:file { write create open unlink };
 
 use_bsm_device(system_app)
