@@ -1,8 +1,9 @@
 # system_app domain rules
 allow  system_app  system_app_data_file:lnk_file   r_file_perms;
+
 # for Depict
-allow  system_app  sysfs:file { write };
-allow system_app cache_file:dir { write add_name };
+allow system_app sysfs:file { write };
+allow system_app cache_file:dir { write add_name remove_name };
 allow system_app cache_file:file { write create open };
 
 use_bsm_device(system_app)
