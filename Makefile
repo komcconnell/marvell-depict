@@ -6,7 +6,7 @@ CERTS_DIR	 = ~/.android-certs
 DATE		 := `date +%m%d%y`
 RELEASE_NAME	 := $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
 
-OTA_VERSION	 := 1.22
+OTA_VERSION	 := 1.23
 OTA_RELEASE_NAME := $(TMPDIR)/depict_ota_debug_$(OTA_VERSION)_$(DATE).zip
 
 all: build
@@ -142,6 +142,12 @@ dpatch: dpatch_logo dpatch_middleware
 	   $(WORK_DIR)/frameworks/base/data/etc/platform.xml
 	cp external/sepolicy/app.te \
 	   $(WORK_DIR)/external/sepolicy/app.te
+	cp vendor/marvell/generic/frameworks/recovery/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/generic/frameworks/recovery/Android.mk
+	cp vendor/marvell/generic/frameworks/recovery/minui/mrvl_graphics_fbdev.c \
+	   $(WORK_DIR)/vendor/marvell/generic/frameworks/recovery/minui/mrvl_graphics_fbdev.c
+	cp vendor/marvell/generic/frameworks/recovery/mrvl_recovery.cpp \
+	   $(WORK_DIR)/vendor/marvell/generic/frameworks/recovery/mrvl_recovery.cpp
 	mkdir -p $(WORK_DIR)/vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/common/pinmux_setting/bg2dtv_poplar
 	cp vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/common/pinmux_setting/bg2dtv_poplar/pinmux_setting.h \
 	   $(WORK_DIR)/vendor/marvell-sdk/MV88DE3100_SDK/MV88DE3100_Tools/bsp/common/pinmux_setting/bg2dtv_poplar/pinmux_setting.h
