@@ -50,11 +50,14 @@ static gr_surface fbdev_flip(minui_backend*);
 static void fbdev_blank(minui_backend*, bool);
 static void fbdev_exit(minui_backend*);
 
-#define DEBUG_GFX 1
+#define DEBUG_GFX 0
 
 #ifdef RECOVERY_TV_DISP_OUTPUT
-#define FB_WIDTH        1920
-#define FB_HEIGHT       1080
+//#define FB_WIDTH        1920
+//#define FB_HEIGHT       1080
+// Depict
+#define FB_WIDTH        3840
+#define FB_HEIGHT       2160
 #else
 #define FB_WIDTH        1280
 #define FB_HEIGHT        720
@@ -323,9 +326,9 @@ static gr_surface fbdev_init(minui_backend* backend) {
 
 #ifdef RECOVERY_TV_DISP_OUTPUT
     AMP_RPC(hres, AMP_DISP_OUT_SetResolution, gDisp, AMP_DISP_PLANE_MAIN,
-        AMP_DISP_OUT_RES_1080P60 | 0x80000000, AMP_DISP_OUT_BIT_DPE_8);
-    AMP_RPC(hres, AMP_DISP_OUT_HDMI_SetVidFmt, gDisp, AMP_DISP_OUT_CLR_FMT_YCBCR422,
-        AMP_DISP_OUT_BIT_DPE_8, 1);
+        AMP_DISP_OUT_RES_LVDS_2160P12 | 0x80000000, AMP_DISP_OUT_BIT_DPE_10);
+    AMP_RPC(hres, AMP_DISP_OUT_HDMI_SetVidFmt, gDisp, AMP_DISP_OUT_CLR_FMT_YCBCR444,
+        AMP_DISP_OUT_BIT_DPE_10, 1);
 #else
     AMP_RPC(hres, AMP_DISP_OUT_SetResolution, gDisp, AMP_DISP_PLANE_MAIN,
         AMP_DISP_OUT_RES_720P60 | 0x80000000, AMP_DISP_OUT_BIT_DPE_8);
