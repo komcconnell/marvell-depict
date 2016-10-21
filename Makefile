@@ -120,6 +120,10 @@ dpatch_middleware:
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/Android.mk
 	cp vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictUpgradeManager/DepictUpgradeManager.apk
+	cp vendor/marvell/prebuilts/generic/apps/DepictFrameService/Android.mk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFrameService/Android.mk
+	cp vendor/marvell/prebuilts/generic/apps/DepictFrameService/DepictFrameService.apk \
+	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictFrameService/DepictFrameService.apk
 	cp vendor/marvell/prebuilts/generic/apps/DepictNodeService/Android.mk \
 	   $(WORK_DIR)/vendor/marvell/prebuilts/generic/apps/DepictNodeService/Android.mk
 	cp vendor/marvell/prebuilts/generic/apps/DepictNodeService/DepictNodeService.apk \
