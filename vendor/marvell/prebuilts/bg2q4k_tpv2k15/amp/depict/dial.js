@@ -223,6 +223,7 @@ var isAndroid = process.platform === 'android' ? true : false;
 var frameSettingsFile  = isAndroid ? "/sdcard/frame_server/settings" : "/tmp/frame_settings";
 var globalSettingsFile  = isAndroid ? "/sdcard/frame_server/global_settings" : "/tmp/global_settings";
 var networksFile  = isAndroid ? "/sdcard/frame_server/networks.json" : "/tmp/networks.json";
+var updateFile = isAndroid ? "/sdcard/frame_server/update_info" : "/tmp/update_info";
 
 var credentialsFile = isAndroid ? "/data/misc/depict/credentials.json" : "/tmp/credentials.json";
 var configFile = isAndroid ? "/data/misc/depict/config.json" : "/tmp/config.json";
@@ -346,6 +347,27 @@ var readConfigSettings = function(settings) {
     } catch (e) {
         LogErr("Error reading file: " + configFile + " Bad Data!");
     }
+}
+
+// Return true of the Frame is "provisioned" (both setup and upgrade checked)
+var isProvisioned = function() {
+    var retval = false;
+    try {
+        var data = fs.readFileSync(updateFile);
+        var json = JSON.parse(data);
+        try {
+            if (json.provisioned == "true") {
+                retval = true;
+            } 
+        } catch (e) {
+            LogWarn("Reading file: " + updateFile + " Bad Data!");
+            retval = false;
+        }
+    } catch (e) {
+        LogWarn("Reading file: " + updateFile + " Bad Data!");
+        retval = false;
+    }
+    return retval;
 }
 
 // Read user settings from settings file.  If the file doesn't currently
@@ -1822,8 +1844,12 @@ var appStatus = function(appName)
                         depictFrame.state = "running";
                     } else {
                         if (depictFrame.state != "stopped") {
-	                    LogWarn('[' + appName + '] STOPPED! Did the app crash/die? Restarting...');
-                            startApplication("DepictFramePlayer");
+                            if (isProvisioned() == true) {
+                                LogWarn('[' + appName + '] STOPPED! Did the app crash/die? Restarting...');
+                                startApplication("DepictFramePlayer");
+                            } else {
+                                LogWarn('[' + appName + '] STOPPED! Not starting until provisioned!...');
+                            }
                         } else {
 	                    LogDebug('[' + appName + '] STOPPED!');
                             depictFrame.state = "stopped";
@@ -2289,6 +2315,12 @@ var startServer = function() {
         startUdpMcastServer();
         startDialServer();
         startAppServer();
+    }
+
+    if (isProvisioned() == false) {
+        LogWarn("Unable to automatically start DepictFramePlayer: Device " +
+            "not yet provisioned!");
+        return;
     }
 
     // Let's just go ahead and automatically start our main player app
