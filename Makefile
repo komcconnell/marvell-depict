@@ -6,7 +6,7 @@ CERTS_DIR	 = ~/.android-certs
 DATE		 := `date +%m%d%y`
 RELEASE_NAME	 := $(TMPDIR)/eMMCimg_depict_$(DATE).tar.gz
 
-OTA_VERSION	 := 1.23.4
+OTA_VERSION	 := 1.23.5
 OTA_RELEASE_NAME := $(TMPDIR)/depict_ota_debug_$(OTA_VERSION)_$(DATE).zip
 
 all: build
